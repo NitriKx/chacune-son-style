@@ -1,0 +1,92 @@
+version: '3'
+services:
+
+
+
+#
+#    FRONTEND 
+#
+  nginx:
+    image: jwilder/nginx-proxy
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: always
+    depends_on: 
+      - web
+    networks:
+      net:
+        aliases:
+          - frontend
+    env_file: env.inc
+    environment:
+      # - DEFAULT_HOST=p0i.re
+      # - VIRTUAL_HOST=www.p0i.re,p0i.re
+      # - LETSENCRYPT_HOST=www.p0i.re,p0i.re
+      # - LETSENCRYPT_EMAIL=benoit.sauvere@gmail.com
+    volumes: 
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - nginx-certs:/etc/nginx/certs:ro
+      - nginx-vhosts:/etc/nginx/vhost.d 
+      - nginx-html:/usr/share/nginx/html
+    labels:
+      "com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy": "true"
+
+
+#
+#   LETS ENCRYPT CERTIFICATE GENERTOR
+#
+  # nginx-ssl-companion:
+  #   image: jrcs/letsencrypt-nginx-proxy-companion
+  #   depends_on: 
+  #     - nginx
+  #   env_file: env.inc
+  #   volumes: 
+  #     - /var/run/docker.sock:/var/run/docker.sock:ro
+  #     - nginx-certs:/etc/nginx/certs:rw
+  #     - nginx-vhosts:/etc/nginx/vhost.d 
+  #     - nginx-html:/usr/share/nginx/html
+  #   networks:
+  #     - netbox
+
+
+  web:
+    image: odoo:11.0
+    depends_on:
+      - db
+    networks:
+      net:
+        aliases:
+          - odoo
+    ports:
+      - "8069:8069"
+    volumes:
+      - odoo-web-data:/var/lib/odoo
+      - ./config:/etc/odoo
+      - ./addons:/mnt/extra-addons
+  
+
+  
+  db:
+    image: postgres:9.4
+    networks:
+      net:
+        aliases:
+          - odoodb
+    environment:
+      - POSTGRES_PASSWORD=odoo
+      - POSTGRES_USER=odoo
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - odoo-db-data:/var/lib/postgresql/data/pgdata
+
+
+networks:
+  net:
+
+volumes:
+  odoo-web-data:
+  odoo-db-data:
+  nginx-vhosts:
+  nginx-html:
+  nginx-certs:
