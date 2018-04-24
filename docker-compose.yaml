@@ -60,7 +60,9 @@ services:
           - odoo
     environment:
       - VIRTUAL_HOST=crm.chacunesonstyle.com
+      - VIRTUAL_PORT=8069
       - LETSENCRYPT_HOST=crm.chacunesonstyle.com
+      - LETSENCRYPT_EMAIL=benoit.sauvere@gmail.com
     ports:
       - "8069:8069"
     volumes:
