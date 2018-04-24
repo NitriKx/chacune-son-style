@@ -5,6 +5,7 @@
 #
 
 
+echo 'alias ll="ls -al"' >> /root/.bashrc
 
 #
 #.  DOCKER
@@ -42,3 +43,9 @@ apt-get install -y git
 
 git config --global credential.helper "cache --timeout=3600"
 
+export INSTALL_DIR=/opt/chacunesonstyle/
+
+mkdir -p "${INSTALL_DIR}"
+cd "${INSTALL_DIR}"
+git init 
+git remote add origin "https://github.com/NitriKx/chacune-son-style.git"

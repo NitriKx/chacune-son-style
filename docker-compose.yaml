@@ -20,10 +20,10 @@ services:
           - frontend
     env_file: env.inc
     environment:
-      # - DEFAULT_HOST=p0i.re
-      # - VIRTUAL_HOST=www.p0i.re,p0i.re
-      # - LETSENCRYPT_HOST=www.p0i.re,p0i.re
-      # - LETSENCRYPT_EMAIL=benoit.sauvere@gmail.com
+      - DEFAULT_HOST=chacunesonstyle.com
+      - VIRTUAL_HOST=www.chacunesonstyle.com,chacunesonstyle.com
+      - LETSENCRYPT_HOST=www.chacunesonstyle.com,chacunesonstyle.com
+      - LETSENCRYPT_EMAIL=benoit.sauvere@gmail.com
     volumes: 
       - /var/run/docker.sock:/tmp/docker.sock:ro
       - nginx-certs:/etc/nginx/certs:ro
@@ -36,18 +36,18 @@ services:
 #
 #   LETS ENCRYPT CERTIFICATE GENERTOR
 #
-  # nginx-ssl-companion:
-  #   image: jrcs/letsencrypt-nginx-proxy-companion
-  #   depends_on: 
-  #     - nginx
-  #   env_file: env.inc
-  #   volumes: 
-  #     - /var/run/docker.sock:/var/run/docker.sock:ro
-  #     - nginx-certs:/etc/nginx/certs:rw
-  #     - nginx-vhosts:/etc/nginx/vhost.d 
-  #     - nginx-html:/usr/share/nginx/html
-  #   networks:
-  #     - netbox
+  nginx-ssl-companion:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    depends_on: 
+      - nginx
+    env_file: env.inc
+    volumes: 
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+      - nginx-certs:/etc/nginx/certs:rw
+      - nginx-vhosts:/etc/nginx/vhost.d 
+      - nginx-html:/usr/share/nginx/html
+    networks:
+      - netbox
 
 
   web:
@@ -58,6 +58,9 @@ services:
       net:
         aliases:
           - odoo
+    environment:
+      - VIRTUAL_HOST=crm.chacunesonstyle.com
+      - LETSENCRYPT_HOST=crm.chacunesonstyle.com
     ports:
       - "8069:8069"
     volumes:
@@ -66,7 +69,7 @@ services:
       - ./addons:/mnt/extra-addons
   
 
-  
+
   db:
     image: postgres:9.4
     networks:
