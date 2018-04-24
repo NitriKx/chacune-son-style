@@ -47,7 +47,7 @@ services:
       - nginx-vhosts:/etc/nginx/vhost.d 
       - nginx-html:/usr/share/nginx/html
     networks:
-      - netbox
+      - net
 
 
   web:
